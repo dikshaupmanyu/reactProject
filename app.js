@@ -7,7 +7,7 @@ const cors = require("cors");
 const path = require("path");
 
 
-const port = 8005;
+const port = process.env.PORT || 8005;
 
 // const NODE_ENV = production
 
@@ -22,7 +22,7 @@ const __dirname1 =  path.resolve();
 //     } )
 // }
 
-if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "staging") {
+if (process.env.NODE_ENV === "production") {
     app.use(express.static("client/build"));
     app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname1 + "/client/build/index.html"));
