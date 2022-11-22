@@ -4,6 +4,7 @@ import Form from "react-bootstrap/Form";
 import { useNavigate, useParams } from "react-router-dom";
 
 const EditCategory = () => {
+  
   const [fname, setName] = useState("");
   const [status, setStatus] = useState("");
 
