@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react'
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { Link, useNavigate , useParams } from "react-router-dom";
+import { useNavigate , useParams , useHistory} from "react-router-dom";
 
 const Update = () => {
 
+  const  history = useNavigate(""); 
     
     const [fname , setName] = useState("");
     const [description , setDescription] = useState("");
+    // const [imgpath, setImage] = useState("");
   
 
     const params = useParams();
-    const  history = useNavigate(); 
 
     useEffect(() => {
         getProductDetails()
@@ -24,23 +25,28 @@ const Update = () => {
         // console.log(result);
         setName(result.fname)
         setDescription(result.description)
+        // setImage(result.imgpath)
      }
 
-   const updateProduct = async () => {
-      console.warn(fname, description);
-      let res = await fetch(`http://localhost:8005/product/${params.id}`,{
-        method: "Put",
-        body: JSON.stringify({fname, description}),
+   const updateProduct = async (e) => {
+      // console.warn(fname, description);
+      e.preventDefault();
+      let res2 = await fetch(`http://localhost:8005/product/${params.id}`,{
+        method: "PATCH",
         headers:{
           "Content-Type":"Application/json",
-        }
+        },
+        body: JSON.stringify({fname, description}),
       });
-      res = await res.json();
-      console.warn(res);
-      // if(res){
-      // //   alert("yes")
-      //   history("/home")
-      // }
+
+      res2 = await res2.json();
+      console.log(res2);
+      if(res2.status === 422 || !res2){
+      //   alert("yes")
+    }else{
+      alert("data update")
+      history("/home")
+      }
    }  
 
   
@@ -48,8 +54,8 @@ const Update = () => {
   return (
     <>
       <div className="container mt-3">
-        <h1>Upload Your Img Here</h1>
-
+        <h1>Edit Product</h1>
+        <div className="px-5 py-3 mx-3 my-5 border border-secondary rounded">
         <Form className='mt-3'>
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label>Name</Form.Label>
@@ -63,12 +69,14 @@ const Update = () => {
 
           {/* <Form.Group className="mb-3" controlId="formBasicPassword">
             <Form.Label>Select Your Image</Form.Label>
-            <Form.Control type="file"  onChange={(e) => {setImage(e.target.value)}}  name='photo' placeholder="" />
+            <Form.Control type="file" value=""  onChange={(e) => {setImage(e.target.files[0])}}  name='photo' placeholder="" />
           </Form.Group> */}
           <Button variant="primary" onClick={updateProduct} type="submit">
             Submit
           </Button>
         </Form>
+
+          </div>
       </div>
     </>
   )

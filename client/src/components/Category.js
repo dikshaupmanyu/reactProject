@@ -4,66 +4,57 @@ import Form from 'react-bootstrap/Form';
 import axios from "axios"
 import { useNavigate } from "react-router-dom";
 
-const Product = () => {
+const Category = () => {
 
-  const [product, setProduct] = useState({
+  const [category, setCategory] = useState({
     fname:"",
-    description:""
+    status:"",
   });
 
-  const [file, setFile] = useState("");
 
   const history = useNavigate();
 
   const setdata = (e) => {
     const {value,name} = e.target;
     console.log(value);
-    setProduct(() => {
+    setCategory(() => {
           return {
-              ...product, 
+              ...category, 
               [name]:value
           }
       })
   }
 
-  const setimgfile = (e) => {
-    setFile(e.target.files[0])
-  }
-
   // adduser data
 
-  const addUserData = async (e) => {
+  const addCategory = async (e) => {
     e.preventDefault();
 
-    var formData = new FormData();
-    formData.append("photo", file);
-    formData.append("fname", product.fname);
-    formData.append("description", product.description);
+    const {fname,  status} = category;
 
-    const config = {
-      headers: {
-        "Content-Type": "multipart/form-data"
-      }
-    }
+    const res = await fetch("/category", {
+      method:"POST",
+      headers:{
+        "Content-Type": "application/json"
+      },
+      body:JSON.stringify({
+       fname, status
+      })
+    });
 
-    const res = await axios.post("/product", formData, config);
-    // const res = await fetch("/product", {
-    //   method:"POST",
-    //   config,
-    //   body:formData
-    // });
+    const data =  res
 
-    if (res.data.status === 401 || !res.data) {
-      console.log("errror")
+    if (data.status === 201 ) {
+        history("/home")
     } else {
-      history("/home")
+        console.log("error")
     }
   }
 
   return (
     <>
       <div className="container mt-3">
-        <h1>Add Product</h1>
+        <h1>Add Category</h1>
         <div className="px-5 py-3 mx-3 my-5 border border-secondary rounded">
 
         <Form className='mt-3'>
@@ -72,16 +63,21 @@ const Product = () => {
             <Form.Control type="text" name='fname' onChange={setdata} placeholder="" />
           </Form.Group>
 
+          {/* <Form.Group className="mb-3" controlId="formBasicEmail">
+            <Form.Label>Date</Form.Label>
+            <Form.Control type="date" name='date' onChange={setdata} placeholder="" />
+          </Form.Group> */}
+
           <Form.Group className="mb-3" controlId="formBasicEmail">
-            <Form.Label>Description</Form.Label>
-            <Form.Control type="text" name='description' onChange={setdata} placeholder="" />
+            <Form.Label>Status</Form.Label>
+            <Form.Control type="text" name='status' onChange={setdata} placeholder="" />
           </Form.Group>
 
-          <Form.Group className="mb-3" controlId="formBasicPassword">
+          {/* <Form.Group className="mb-3" controlId="formBasicPassword">
             <Form.Label>Select Your Image</Form.Label>
             <Form.Control type="file" onChange={setimgfile} name='photo' placeholder="" />
-          </Form.Group>
-          <Button variant="primary" type="submit" onClick={addUserData}>
+          </Form.Group> */}
+          <Button variant="primary" type="submit" onClick={addCategory}>
             Submit
           </Button>
         </Form>
@@ -91,4 +87,4 @@ const Product = () => {
   )
 }
 
-export default Product
+export default Category
