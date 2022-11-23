@@ -17,8 +17,8 @@ import EditSubCategory from './components/EditSC';
 function App() {
   return (
     <>
-      <Header />
 
+      <Header />
       <Routes>
         <Route path='/' element={ <SignUp />} />
         <Route path='/signin' element={ <SignIn />} />
